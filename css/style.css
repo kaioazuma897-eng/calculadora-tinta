@@ -97,6 +97,7 @@ input:focus { outline: 2px solid var(--destaque); outline-offset: 1px; }
 .embalagens li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--borda); }
 
 .cliente { margin: 16px 0 12px; }
+.opcao-precos { margin-bottom: 12px; padding-bottom: 0; color: var(--texto); font-size: 0.95rem; }
 .acoes { display: flex; gap: 10px; flex-wrap: wrap; }
 
 @media (max-width: 520px) {

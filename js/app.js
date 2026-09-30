@@ -13,6 +13,7 @@ const estadoInicial = {
     { nome: 'Quarto', litros: 0.9, preco: 32 },
   ],
   cliente: '',
+  mostrarPrecos: true,
 };
 
 let estado = carregar();
@@ -83,6 +84,10 @@ function ligarTinta() {
   const cliente = $('cliente');
   cliente.value = estado.cliente;
   cliente.addEventListener('input', () => { estado.cliente = cliente.value; salvar(); });
+
+  const mostrarPrecos = $('mostrar-precos');
+  mostrarPrecos.checked = estado.mostrarPrecos;
+  mostrarPrecos.addEventListener('change', () => { estado.mostrarPrecos = mostrarPrecos.checked; salvar(); });
 }
 
 function renderizarEmbalagens() {
@@ -152,36 +157,43 @@ function atualizar() {
 
 function montarOrcamento(r) {
   const hoje = new Date().toLocaleDateString('pt-BR');
+  const comPrecos = estado.mostrarPrecos;
   const linhasComodos = estado.comodos.map((c, i) => `
     <tr><td>${escapar(c.nome)}</td><td>${numero(c.largura)} × ${numero(c.comprimento)} × ${numero(c.altura)} m</td>
     <td>${numero(r.areas[i].total)} m²</td></tr>`).join('');
   const linhasItens = r.compra.itens.map((item) => `
     <tr><td>${item.quantidade}</td><td>${item.nome} ${numero(item.litros, 1)} L</td>
-    <td>${reais(item.preco)}</td><td>${reais(item.quantidade * item.preco)}</td></tr>`).join('');
+    ${comPrecos ? `<td>${reais(item.preco)}</td><td>${reais(item.quantidade * item.preco)}</td>` : ''}</tr>`).join('');
+  const cabecalhoPrecos = comPrecos ? '<th>Unitário</th><th>Subtotal</th>' : '';
+  const fechamento = comPrecos
+    ? `<p class="total">Total: ${reais(r.compra.custo)}</p>
+       <p class="rodape">Orçamento válido por 7 dias. Valores sujeitos a alteração.</p>`
+    : `<p class="total">Total: ${numero(r.compra.volume, 1)} L de tinta</p>`;
 
   $('orcamento').innerHTML = `
-    <h1>Orçamento de tinta</h1>
+    <h1>${comPrecos ? 'Orçamento de tinta' : 'Lista de tinta'}</h1>
     <p>Data: ${hoje}${estado.cliente ? ` · Cliente: ${escapar(estado.cliente)}` : ''}</p>
     <h2>Cômodos</h2>
     <table><thead><tr><th>Cômodo</th><th>Medidas (L × C × A)</th><th>Área</th></tr></thead><tbody>${linhasComodos}</tbody></table>
     <p>Área total: ${numero(r.areaTotal)} m² · ${estado.tinta.demaos} demão(s) · rendimento ${numero(estado.tinta.rendimento, 1)} m²/L
       · perda ${estado.tinta.perda}% → ${numero(r.litros, 1)} L necessários</p>
     <h2>Produtos</h2>
-    <table><thead><tr><th>Qtd.</th><th>Embalagem</th><th>Unitário</th><th>Subtotal</th></tr></thead><tbody>${linhasItens}</tbody></table>
-    <p class="total">Total: ${reais(r.compra.custo)}</p>
-    <p class="rodape">Orçamento válido por 7 dias. Valores sujeitos a alteração.</p>`;
+    <table><thead><tr><th>Qtd.</th><th>Embalagem</th>${cabecalhoPrecos}</tr></thead><tbody>${linhasItens}</tbody></table>
+    ${fechamento}`;
 }
 
 function textoWhatsApp(r) {
+  const comPrecos = estado.mostrarPrecos;
   const linhas = [
-    '*Orçamento de tinta*',
+    comPrecos ? '*Orçamento de tinta*' : '*Lista de tinta*',
     estado.cliente ? `Cliente: ${estado.cliente}` : null,
     `Área total: ${numero(r.areaTotal)} m² (${estado.tinta.demaos} demãos)`,
     `Tinta necessária: ${numero(r.litros, 1)} L`,
     '',
-    ...r.compra.itens.map((item) => `• ${descreverItem(item)}: ${reais(item.quantidade * item.preco)}`),
+    ...r.compra.itens.map((item) =>
+      comPrecos ? `• ${descreverItem(item)}: ${reais(item.quantidade * item.preco)}` : `• ${descreverItem(item)}`),
     '',
-    `*Total: ${reais(r.compra.custo)}*`,
+    comPrecos ? `*Total: ${reais(r.compra.custo)}*` : `*Total: ${numero(r.compra.volume, 1)} L de tinta*`,
   ];
   return linhas.filter((l) => l !== null).join('\n');
 }
