@@ -4,7 +4,7 @@ Ferramenta web que calcula quanta tinta comprar para pintar um ambiente, sugere 
 
 Nasceu de um problema real do balcão de uma loja de tintas: o cliente chega com as medidas "de cabeça" e o cálculo é feito à mão, com risco de faltar tinta ou de o cliente levar embalagem demais.
 
-**Demo:** _(link do GitHub Pages aqui)_
+**Demo:** https://kaioazuma897-eng.github.io/calculadora-tinta/
 
 ## Funcionalidades
 
