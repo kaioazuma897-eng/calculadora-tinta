@@ -1,0 +1,120 @@
+:root {
+  --fundo: #f5f3ef;
+  --cartao: #ffffff;
+  --texto: #1f2328;
+  --suave: #5f6670;
+  --borda: #dcd8d0;
+  --destaque: #c2410c;
+  --destaque-texto: #ffffff;
+  --whatsapp: #15803d;
+  --raio: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #17191c;
+    --cartao: #212429;
+    --texto: #e8e6e3;
+    --suave: #a1a7b0;
+    --borda: #363a41;
+    --destaque: #f97316;
+    --destaque-texto: #1a1a1a;
+    --whatsapp: #22c55e;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.app { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+
+.topo h1 { margin: 0 0 4px; font-size: 1.8rem; }
+.topo p { margin: 0 0 24px; color: var(--suave); }
+
+.bloco {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.bloco h2 { margin: 0 0 12px; font-size: 1.15rem; }
+.bloco-titulo { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.bloco-titulo h2 { margin: 0; }
+.dica { color: var(--suave); font-size: 0.9rem; margin: 8px 0 12px; }
+
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+
+label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: var(--suave); }
+label.checkbox { flex-direction: row; align-items: center; gap: 8px; align-self: end; padding-bottom: 8px; }
+
+input[type="number"], input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+}
+input:focus { outline: 2px solid var(--destaque); outline-offset: 1px; }
+
+.comodo { border: 1px solid var(--borda); border-radius: var(--raio); padding: 14px; margin-bottom: 12px; }
+.comodo-topo { display: flex; gap: 8px; margin-bottom: 10px; }
+.comodo-topo .nome { font-weight: 600; }
+.remover {
+  flex: none; width: 38px; font-size: 1.3rem; line-height: 1;
+  background: none; color: var(--suave); border: 1px solid var(--borda); border-radius: 6px; cursor: pointer;
+}
+.remover:hover { color: var(--destaque); border-color: var(--destaque); }
+.area-comodo { margin: 10px 0 0; font-size: 0.9rem; color: var(--suave); }
+
+.botao {
+  padding: 10px 16px; font: inherit; font-weight: 600; cursor: pointer;
+  background: var(--destaque); color: var(--destaque-texto); border: none; border-radius: 8px;
+}
+.botao.secundario { background: none; color: var(--destaque); border: 1px solid var(--destaque); }
+.botao.whatsapp { background: var(--whatsapp); }
+.botao:hover { filter: brightness(1.08); }
+
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th, .tabela td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--borda); }
+.tabela th { font-size: 0.85rem; color: var(--suave); font-weight: 500; }
+.tabela input { max-width: 140px; }
+
+.numeros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+.numeros div { background: var(--fundo); border-radius: 8px; padding: 12px; }
+.rotulo { display: block; font-size: 0.8rem; color: var(--suave); }
+.numeros strong { font-size: 1.3rem; }
+
+.embalagens { list-style: none; padding: 0; margin: 0; }
+.embalagens li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--borda); }
+
+.cliente { margin: 16px 0 12px; }
+.acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 520px) {
+  .numeros { grid-template-columns: 1fr; }
+  .acoes .botao { flex: 1 1 100%; }
+}
+
+/* ---------- Orçamento impresso ---------- */
+.orcamento { display: none; }
+
+@media print {
+  body { background: #fff; color: #000; }
+  .app { display: none; }
+  .orcamento { display: block; padding: 0 8px; font-size: 12pt; }
+  .orcamento h1 { font-size: 20pt; margin: 0 0 4px; }
+  .orcamento h2 { font-size: 13pt; margin: 20px 0 6px; }
+  .orcamento table { width: 100%; border-collapse: collapse; }
+  .orcamento th, .orcamento td { text-align: left; padding: 6px; border-bottom: 1px solid #ccc; }
+  .orcamento .total { font-size: 16pt; font-weight: 700; text-align: right; margin-top: 16px; }
+  .orcamento .rodape { color: #555; font-size: 10pt; margin-top: 32px; }
+}

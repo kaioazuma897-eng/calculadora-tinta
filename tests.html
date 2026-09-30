@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Testes - Calculadora de Tinta</title>
+  <style>
+    body { font: 15px/1.5 system-ui, sans-serif; padding: 16px; }
+    .ok { color: #15803d; } .falha { color: #b91c1c; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Testes das funções de cálculo</h1>
+  <ul id="resultados"></ul>
+  <p id="resumo"></p>
+
+  <script src="js/calculo.js"></script>
+  <script>
+    const resultados = [];
+    function teste(nome, fn) {
+      try { fn(); resultados.push({ nome, ok: true }); }
+      catch (e) { resultados.push({ nome, ok: false, erro: e.message }); }
+    }
+    function igual(atual, esperado, tolerancia = 1e-6) {
+      if (Math.abs(atual - esperado) > tolerancia) throw new Error(`esperado ${esperado}, veio ${atual}`);
+    }
+
+    const embalagens = [
+      { nome: 'Lata', litros: 18, preco: 380 },
+      { nome: 'Galão', litros: 3.6, preco: 95 },
+      { nome: 'Quarto', litros: 0.9, preco: 32 },
+    ];
+
+    teste('área das paredes desconta porta e janela', () => {
+      const a = areaComodo({ largura: 4, comprimento: 5, altura: 2.7, portas: 1, janelas: 1, pintarTeto: false });
+      igual(a.paredes, 48.6 - 1.68 - 1.2);
+      igual(a.teto, 0);
+    });
+
+    teste('teto soma largura × comprimento', () => {
+      const a = areaComodo({ largura: 3, comprimento: 4, altura: 2.5, portas: 0, janelas: 0, pintarTeto: true });
+      igual(a.teto, 12);
+      igual(a.total, 35 + 12);
+    });
+
+    teste('área nunca fica negativa', () => {
+      const a = areaComodo({ largura: 0.5, comprimento: 0.5, altura: 1, portas: 5, janelas: 5, pintarTeto: false });
+      igual(a.paredes, 0);
+    });
+
+    teste('litros = área × demãos ÷ rendimento + perda', () => {
+      igual(litrosNecessarios(100, { rendimento: 10, demaos: 2, perda: 10 }), 22);
+      igual(litrosNecessarios(0, { rendimento: 10, demaos: 2, perda: 10 }), 0);
+    });
+
+    teste('5 L: galão + 2 quartos sai mais barato que 2 galões', () => {
+      const c = melhorCombinacao(5, embalagens);
+      igual(c.custo, 95 + 2 * 32);
+      igual(c.volume, 5.4);
+    });
+
+    teste('volume comprado sempre cobre o necessário', () => {
+      for (let l = 0.1; l < 60; l += 0.7) {
+        const c = melhorCombinacao(l, embalagens);
+        if (c.volume + 1e-9 < l) throw new Error(`faltou tinta para ${l} L`);
+      }
+    });
+
+    teste('lata sai mais barata quando o preço compensa', () => {
+      const c = melhorCombinacao(16, embalagens); // 5 galões = 475, lata = 380
+      if (c.itens.length !== 1 || c.itens[0].nome !== 'Lata') throw new Error(JSON.stringify(c.itens));
+    });
+
+    teste('sem litros, nada a comprar', () => {
+      const c = melhorCombinacao(0, embalagens);
+      igual(c.custo, 0);
+      if (c.itens.length) throw new Error('não deveria ter itens');
+    });
+
+    const lista = document.getElementById('resultados');
+    resultados.forEach((r) => {
+      const li = document.createElement('li');
+      li.className = r.ok ? 'ok' : 'falha';
+      li.textContent = (r.ok ? '✓ ' : '✗ ') + r.nome + (r.erro ? ` — ${r.erro}` : '');
+      lista.appendChild(li);
+    });
+    const falhas = resultados.filter((r) => !r.ok).length;
+    document.getElementById('resumo').textContent =
+      falhas ? `${falhas} teste(s) falharam.` : `Todos os ${resultados.length} testes passaram.`;
+  </script>
+</body>
+</html>

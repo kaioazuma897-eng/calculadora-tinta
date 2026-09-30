@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Tinta</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="topo">
+      <h1>Calculadora de Tinta</h1>
+      <p>Informe os cômodos e veja quantos litros comprar, as embalagens mais econômicas e o orçamento pronto.</p>
+    </header>
+
+    <section class="bloco">
+      <div class="bloco-titulo">
+        <h2>Cômodos</h2>
+        <button type="button" id="adicionar-comodo" class="botao secundario">+ Adicionar cômodo</button>
+      </div>
+      <p class="dica">Medidas em metros. Cada porta desconta 0,80 × 2,10 m e cada janela 1,20 × 1,00 m.</p>
+      <div id="lista-comodos"></div>
+    </section>
+
+    <section class="bloco">
+      <h2>Tinta</h2>
+      <div class="grade">
+        <label>Rendimento (m² por litro, por demão)
+          <input type="number" id="rendimento" min="1" step="0.5">
+        </label>
+        <label>Demãos
+          <input type="number" id="demaos" min="1" step="1">
+        </label>
+        <label>Margem de perda (%)
+          <input type="number" id="perda" min="0" step="1">
+        </label>
+      </div>
+    </section>
+
+    <section class="bloco">
+      <h2>Embalagens e preços</h2>
+      <p class="dica">Preços de exemplo. Ajuste para os valores da sua loja; eles ficam salvos neste navegador.</p>
+      <table class="tabela">
+        <thead><tr><th>Embalagem</th><th>Litros</th><th>Preço (R$)</th></tr></thead>
+        <tbody id="lista-embalagens"></tbody>
+      </table>
+    </section>
+
+    <section class="bloco resultado">
+      <h2>Resultado</h2>
+      <div class="numeros">
+        <div><span class="rotulo">Área total</span><strong id="res-area">–</strong></div>
+        <div><span class="rotulo">Tinta necessária</span><strong id="res-litros">–</strong></div>
+        <div><span class="rotulo">Total</span><strong id="res-custo">–</strong></div>
+      </div>
+      <ul id="res-embalagens" class="embalagens"></ul>
+      <p id="res-sobra" class="dica"></p>
+
+      <label class="cliente">Nome do cliente (opcional)
+        <input type="text" id="cliente" placeholder="Ex.: Maria Souza">
+      </label>
+      <div class="acoes">
+        <button type="button" id="gerar-pdf" class="botao">Gerar PDF do orçamento</button>
+        <button type="button" id="whatsapp" class="botao whatsapp">Enviar pelo WhatsApp</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Só aparece na impressão / "Salvar como PDF" -->
+  <section id="orcamento" class="orcamento" aria-hidden="true"></section>
+
+  <template id="modelo-comodo">
+    <article class="comodo">
+      <div class="comodo-topo">
+        <input type="text" class="nome" data-campo="nome" aria-label="Nome do cômodo">
+        <button type="button" class="remover" aria-label="Remover cômodo">×</button>
+      </div>
+      <div class="grade">
+        <label>Largura<input type="number" min="0" step="0.01" data-campo="largura"></label>
+        <label>Comprimento<input type="number" min="0" step="0.01" data-campo="comprimento"></label>
+        <label>Altura<input type="number" min="0" step="0.01" data-campo="altura"></label>
+        <label>Portas<input type="number" min="0" step="1" data-campo="portas"></label>
+        <label>Janelas<input type="number" min="0" step="1" data-campo="janelas"></label>
+        <label class="checkbox"><input type="checkbox" data-campo="pintarTeto"> Pintar o teto</label>
+      </div>
+      <p class="area-comodo"></p>
+    </article>
+  </template>
+
+  <script src="js/calculo.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
